@@ -45,7 +45,7 @@ def drawtext(fn,it):
 
 	x,y=(300,900)  #初始左上角的坐标
 
-	draw.text((x,y), image_text, font=font)
+	draw.text((x,y), image_text, font=font) 
 	# im.show()
 	im.save(fn)
 

@@ -33,10 +33,13 @@ def get_wallpaper():
 	for i in result:
 	    image_text = i.replace('"copyright":"','').replace('","copyrightlink"','').replace('© ','')
 
+	return filename,image_text
 
-	im = Image.open(filename)  # 打开文件
 
-	font = ImageFont.truetype('simhei.ttf',30)
+def drawtext(fn,it):
+	im = Image.open(fn)  # 打开文件
+
+	font = ImageFont.truetype('/Users/shinkeika/pythonproject/setwallpaper/simhei.ttf', 30)
 
 	draw = ImageDraw.Draw(im)  # 修改图片
 
@@ -44,9 +47,7 @@ def get_wallpaper():
 
 	draw.text((x,y), image_text, font=font)
 	# im.show()
-	im.save(filename)
-
-	return filename	
+	im.save(fn)
 
 
 SCRIPT = """/usr/bin/osascript<<END
@@ -61,6 +62,7 @@ def set_wallpaper(s):
 
 
 if __name__ == '__main__':
-    img = get_wallpaper()
+    img, image_text = get_wallpaper()
     if img:
+    	drawtext(img, image_text)
     	set_wallpaper(img)

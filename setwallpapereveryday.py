@@ -44,6 +44,7 @@ def get_wallpaper():
 	html = requests.get(URL,headers=HEADER).text
 	soup = BeautifulSoup(html, 'lxml')
 	img_ul = soup.find_all('link', {"id": "bgLink"})
+	text = soup.find_all('h2',{'class':'hpcInfoText'})
 	filename = ''
 	# save file
 	for ul in img_ul:
@@ -54,11 +55,8 @@ def get_wallpaper():
 	            f.write(chunk)
 	    print('Saved %s' % filename)
 	# find the text
-	pattern=r"\"copyright\"\:\".*\"\,\"copyrightlink\""
-	pattern = re.compile(pattern)
-	result = pattern.findall(html)
-	for i in result:
-	    image_text = i.replace('"copyright":"','').replace('","copyrightlink"','').replace('© ','')
+	for t in text:
+		image_text = t.text
 
 	return filename,image_text
 

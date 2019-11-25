@@ -35,7 +35,7 @@ HEADER = {
 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3', # 客户端能够接收的内容类型
 'Accept-Language': 'zh-CN,zh;q=0.9,en;q=0.8', # 浏览器可接受的语言
 'Connection': 'keep-alive', # 表示是否需要持久连接
-'cookie':'MUID=225D735E7B5E63B7034A7D5F7F5E6026; SRCHD=AF=NOFORM; SRCHUID=V=2&GUID=DD61EE30B05A4FC38EE40AFC2CD365CB&dmnchg=1; MUIDB=225D735E7B5E63B7034A7D5F7F5E6026; _UR=MC=1; _EDGE_S=mkt=zh-cn&SID=1DA4BE4611D16EE83F1AB04010196F53; _FP=hta=on; ipv6=hit=1572577825564&t=4; SRCHUSR=DOB=20191030&T=1572574252000; ENSEARCH=BENVER=1; _SS=SID=1DA4BE4611D16EE83F1AB04010196F53&HV=1572575901&bIm=003793; SRCHHPGUSR=CW=865&CH=702&DPR=2&UTC=480&WTS=63708171024; ULC=P=1AE27|13:2&H=1AE27|44:3&T=1AE27|41:3:74'
+'cookie':'MUID=225D735E7B5E63B7034A7D5F7F5E6026; SRCHD=AF=NOFORM; SRCHUID=V=2&GUID=DD61EE30B05A4FC38EE40AFC2CD365CB&dmnchg=1; MUIDB=225D735E7B5E63B7034A7D5F7F5E6026; _UR=MC=1; ENSEARCH=BENVER=1; SRCHUSR=DOB=20191030&T=1572607372000; ULC=P=1AF53|23:5&H=1AF53|54:6&T=1AF53|51:6:99; _EDGE_S=SID=0ABB5541A8F2602D1FCD5B4DA93A61DC; _SS=SID=0ABB5541A8F2602D1FCD5B4DA93A61DC&bIm=382&HV=1573007230; ipv6=hit=1573010829662&t=4; SRCHHPGUSR=CW=583&CH=702&DPR=2&UTC=480&WTS=63708604028'
 }
 
 def get_wallpaper():
@@ -44,19 +44,25 @@ def get_wallpaper():
 	html = requests.get(URL,headers=HEADER).text
 	soup = BeautifulSoup(html, 'lxml')
 	img_ul = soup.find_all('link', {"id": "bgLink"})
-	text = soup.find_all('h2',{'class':'hpcInfoText'})
+
+	# find the text
+	# '"copyright":"Clarée Valley, Massif des Cerces, Hautes-Alpes, France (© Franck Guiziou/Alamy)","copyrightlink"'
+	pattern = r'\"copyright\"\:\".*\"\,\"copyrightlink\"'
+	pattern = re.compile(pattern)
+	result = pattern.findall(html)
+	image_text = ''
+	for i in result:
+		image_text = i.replace('"copyright":"', '').replace('","copyrightlink"', '').replace('© ', '')
+
 	filename = ''
 	# save file
 	for ul in img_ul:
 	    r = requests.get(URL + ul['href'], stream=True)
-	    filename = '/Users/shinkeika/Pictures/net.neolib.BingDailyWallpaper/' + time.strftime('%Y_%m_%d_%H_%M_%S',time.localtime(time.time())) + '.jpeg'
+	    filename = '/Users/shinkeika/Pictures/net.neolib.BingDailyWallpaper/' + time.strftime('%Y_%m_%d_%H',time.localtime(time.time())) + '.jpeg'
 	    with open(filename, 'wb+') as f:
 	        for chunk in r.iter_content(chunk_size=128):
 	            f.write(chunk)
 	    print('Saved %s' % filename)
-	# find the text
-	for t in text:
-		image_text = t.text
 
 	return filename,image_text
 

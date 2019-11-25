@@ -60,7 +60,7 @@ def get_wallpaper():
 	    r = requests.get(URL + ul['href'], stream=True)
 	    filename = '/Users/shinkeika/Pictures/net.neolib.BingDailyWallpaper/' + time.strftime('%Y_%m_%d_%H',time.localtime(time.time())) + '.jpeg'
 	    with open(filename, 'wb+') as f:
-	        for chunk in r.iter_content(chunk_size=128):
+	        for chunk in r.iter_content(chunk_size=128): 
 	            f.write(chunk)
 	    print('Saved %s' % filename)
 
